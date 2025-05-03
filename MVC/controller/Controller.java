@@ -1,56 +1,70 @@
-package MVC.controller;
+package controller;
 
-import MVC.model.Sale;
-import MVC.integration.InventorySystem;
-import MVC.integration.DiscountSystem;
-import MVC.integration.Printer;
-import MVC.model.Register;
-import MVC.integration.SystemCreator;
-import MVC.DTO.ItemDetailsDTO;
-import MVC.java.lang.String;
+import dto.ItemDTO;
+import dto.SaleDTO;
+import model.Item;
+import model.Register;
+import model.Sale;
+import integration.Inventory;
 
 public class Controller {
 
-	private Sale sale;
+    private Sale sale;
+    private Inventory inventory;
+    private Register register;
 
-	private InventorySystem inventorySystem;
+    public Controller() {
+        this.inventory = new Inventory();
+        this.register = new Register();
+    }
 
-	private DiscountSystem discountSystem;
+    public void startSale() {
+        this.sale = new Sale();
+    }
+    
+    public ItemDTO scanItem(String itemId) {
+        Item item;
+        if (sale.isItemInSale(itemId)) {
+            // öka kvantitet
+            item = sale.getItemFromSale(itemId);
+            item.increaseQuantity(1);
+        }
+        else {
+            if (inventory.isValidItem(itemId)) {
+                // lägg till i sale
+                ItemDTO itemDTO = inventory.getItem(itemId);
+                item = new Item(itemDTO);
+                sale.addItemToSale(item);
+            }
+            else {
+                // returnera error
+                return null;
+            }
+        }
+        // öka runningtotal
+        sale.increaseTotalPrice(item.getPrice());
+        sale.calculateTotalVat(item.getVat(), item.getPrice());
+        // returnera data
+        return item.generateDTO();
+    }
 
-	private Printer printer;
+    public String getSaleTotal() {
+        // returnera totalprice incl VAT
+        return String.format("%.2f", sale.getTotalPrice());
+    }
 
-	private Register register;
+    public void pay(float amountPaid) {
+        sale.setCash(amountPaid);
+        register.updateTotal(sale.getCash());
+        // calculate change och returnera change
+        sale.setChange(sale.getCash() - sale.getTotalPrice());
+    }
 
-	public Controller Controller(SystemCreator creator) {
-		return null;
-	}
+    public String getReceipt() {
+        return sale.createReceipt();
+    }
 
-	public void startSale() {
-
-	}
-
-	public ItemDetailsDTO enterItem(int itemID, int quantity) {
-		return null;
-	}
-
-	public java.lang.String displayError() {
-		return null;
-	}
-
-	public ItemDetailsDTO increaseItemQuantity() {
-		return null;
-	}
-
-	public void endSale() {
-
-	}
-
-	public void enterPayment() {
-
-	}
-
-	public int enterCustomerID(int customerID) {
-		return 0;
-	}
-
+    public SaleDTO getCurrentSale() {
+        return this.sale.generateDTO();
+    }
 }

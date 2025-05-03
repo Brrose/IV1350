@@ -1,13 +1,21 @@
-package MVC.model;
+package model;
 
 public class Register {
 
-	public Register Register() {
-		return null;
-	}
+    private float total;
 
-	public int updateAmount(int amount) {
-		return 0;
-	}
+    public Register() {
+        this.total = 0;
+    }
+    public float getTotal() {
+        return total;
+    }
 
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
+    public void updateTotal(float amount) {
+        total += amount;
+    }
 }
