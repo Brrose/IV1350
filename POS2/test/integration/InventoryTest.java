@@ -11,7 +11,7 @@ public class InventoryTest {
 
     @BeforeEach
     public void setUp() {
-        inventory = new Inventory(); // Skapar inventory med några förtestade objekt
+        inventory = new Inventory();
     }
 
     @Test
