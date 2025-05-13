@@ -15,8 +15,8 @@ public class ControllerTest {
     @BeforeEach
     public void setUp() {
         controller = new Controller();
-        inventory = new Inventory(); // Skapar inventory med några förtestade objekt
-        controller.startSale(); // Startar en ny försäljning
+        inventory = new Inventory();
+        controller.startSale();
     }
 
     @Test
@@ -31,8 +31,8 @@ public class ControllerTest {
 
     @Test
     public void testScanItemIncreaseQuantityIfAlreadyInSale() {
-        controller.scanItem("abc123"); // Scanna varan en gång
-        controller.scanItem("abc123"); // Scanna varan igen
+        controller.scanItem("abc123");
+        controller.scanItem("abc123");
 
         Item item = controller.getCurrentSale().items().stream()
                 .filter(i -> i.id().equals("abc123"))
